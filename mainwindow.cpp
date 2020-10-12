@@ -39,12 +39,13 @@ MainWindow::MainWindow(QWidget *parent)
     QObject::connect(ui->radioBtn_1544x1032, SIGNAL(clicked()), this, SLOT(onResButtonChange2()));
     QObject::connect(ui->radioBtn_772x516, SIGNAL(clicked()), this, SLOT(onResButtonChange3()));
 
-    //Threshold
+    //Threshold traitement image
     cvThreshold = 0;
     cvRatio = 3;
     QObject::connect(ui->slider_ts, &QSlider::valueChanged, this, &MainWindow::onSliderChange);
     QObject::connect(ui->slider_ratio, &QSlider::valueChanged, this, &MainWindow::onSliderChange2);
 
+    //Allocation dynamique de cvImage; devra être "delete"
     cvImage = new cv::Mat();
 }
 
@@ -95,12 +96,13 @@ void MainWindow::onSingleClick()
         qInfo() << "\tDimensions de l'image source : " << cvImage->rows << " x " << cvImage->cols;
         qInfo() << "\tChannels l'image source : " << cvImage->channels();
 
+        //Déclaration de l'image qui sera ensuite affichée dans l'UI
         cv::Mat cvImageToPrint(cvImage->rows, cvImage->cols, CV_8UC3);
 
         qInfo() << "\tDimensions de l'image destination : " << cvImageToPrint.rows << " x " << cvImageToPrint.cols;
         qInfo() << "\tChannels de l'image destination : " << cvImageToPrint.channels();
 
-        //Traitement de l'image
+        //Traitement de l'image si demandé
         if(ui->checkBox_traitement->isChecked())
         {
             cv::Mat cvImageGray, cvImageBlur;
@@ -175,6 +177,7 @@ void MainWindow::onStopClick()
 
 void MainWindow::onDiscoClick()
 {
+    //Déconnect la caméra
     camera.unInitialize();
 
     //MAJ des bouttons
