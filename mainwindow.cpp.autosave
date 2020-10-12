@@ -39,12 +39,13 @@ MainWindow::MainWindow(QWidget *parent)
     QObject::connect(ui->radioBtn_1544x1032, SIGNAL(clicked()), this, SLOT(onResButtonChange2()));
     QObject::connect(ui->radioBtn_772x516, SIGNAL(clicked()), this, SLOT(onResButtonChange3()));
 
-    //Threshold
+    //Threshold traitement image
     cvThreshold = 0;
     cvRatio = 3;
     QObject::connect(ui->slider_ts, &QSlider::valueChanged, this, &MainWindow::onSliderChange);
     QObject::connect(ui->slider_ratio, &QSlider::valueChanged, this, &MainWindow::onSliderChange2);
 
+    //Allocation dynamique de cvImage; devra être "delete"
     cvImage = new cv::Mat();
 }
 

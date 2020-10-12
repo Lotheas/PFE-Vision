@@ -35,6 +35,8 @@ void camera_support::initilialize()
         CIntegerParameter iHeight(nodemap, "Height");
         CIntegerParameter iOffsetX(nodemap, "OffsetX");
         CIntegerParameter iOffsetY(nodemap, "OffsetY");
+
+        //Modifie les paramètres de la caméra
         qInfo() << "Paramètrage de la caméra : ";
         iPixelFormat.SetValue("BGR8");
         iWidth.SetValue(im_width ,IntegerValueCorrection_Nearest);
@@ -42,6 +44,7 @@ void camera_support::initilialize()
         iOffsetX.SetValue((3088 - im_width) / 2, IntegerValueCorrection_Nearest);
         iOffsetY.SetValue((2064 - im_height) / 2, IntegerValueCorrection_Nearest);
 
+        //Affichage des paramètres effectifs
         qInfo() << "\tWidth : " << iWidth.GetValue() << "\t(Target : " << im_width << ")";
         qInfo() << "\tHeight : " << iHeight.GetValue() << "\t(Target : " << im_height << ")";
         qInfo() << "\tOffsetX : " << iOffsetX.GetValue() << "\t(Target : " << (3088 - im_width) / 2 << ")";
@@ -58,11 +61,13 @@ void camera_support::initilialize()
 
 bool camera_support::take_picture(cv::Mat *result)
 {
+    //Arrête ce que faisait possiblemnt la camréa
     camera->Close();
 
+    //Ouvre une nouvelle connection
     camera->Open();
     camera->StartGrabbing(); //Constructor with default parameters
-qInfo() << "\tgrab started.";
+    qInfo() << "\tgrab started.";
     CGrabResultPtr ptrGrabResult;
 
     camera->RetrieveResult( 5000, ptrGrabResult, TimeoutHandling_ThrowException);
@@ -79,27 +84,27 @@ qInfo() << "\tgrab started.";
         //Créé l'image au format openCV
         cvImage = cv::Mat(ptrGrabResult->GetHeight(), ptrGrabResult->GetWidth(),  CV_8UC3, (uint8_t*) pylonImage.GetBuffer());
 
-//        //Sauvegarde l'image obtenue
-//        qInfo() << "\tImage saving...";
-//        std::ostringstream s;
-//        // Store the image by index definition file name
-//        s << "CVimage_" << "0" << ".jpg";
-//        std::string imageName(s.str());
-//        //Save OpenCV image.
-//        imwrite(imageName, cvImage);
+        //        //Sauvegarde l'image obtenue
+        //        qInfo() << "\tImage saving...";
+        //        std::ostringstream s;
+        //        // Store the image by index definition file name
+        //        s << "CVimage_" << "0" << ".jpg";
+        //        std::string imageName(s.str());
+        //        //Save OpenCV image.
+        //        imwrite(imageName, cvImage);
 
         qInfo() << "\tcvImage dimensions : " << cvImage.rows << " x " << cvImage.cols;
         *result = cvImage.clone();
         qInfo() << "\tResult dimensions : " << result->rows << " x " << result->cols;
 
-//        qInfo() << "\tResult saving...";
-//        std::ostringstream s2;
-//        // Store the image by index definition file name
-//        s2 << "result_" << "0" << ".jpg";
-//        std::string imageName2(s2.str());
-//        //Save OpenCV image.
-//        imwrite(imageName2, *result);
-//        qInfo() << "\tImage saved. Returning cvImage.";
+        //        qInfo() << "\tResult saving...";
+        //        std::ostringstream s2;
+        //        // Store the image by index definition file name
+        //        s2 << "result_" << "0" << ".jpg";
+        //        std::string imageName2(s2.str());
+        //        //Save OpenCV image.
+        //        imwrite(imageName2, *result);
+        //        qInfo() << "\tImage saved. Returning cvImage.";
 
     }
     else
