@@ -107,6 +107,16 @@ private slots:
          * @brief onSliderChange2 : permet de mettre à jour l'attribut cvRatio
          */
     void onSliderChange2();
+    /**
+     * @brief onCkBxContoursChange : met à jour la variable imTraitementType (flag)
+     * @param state
+     */
+    void onCkBxContoursChange(int state);
+    /**
+     * @brief onCkBxContoursChange : met à jour la variable imTraitementType (flag)
+     * @param state
+     */
+    void onCkBxSeuillageChange(int state);
 
 /****************************************
  *  Attributs privés
@@ -128,5 +138,23 @@ private:
     int cvRatio;
 
     cv::Mat *cvImage;
+    cv::Mat cvImageToPrint;
+    /**
+     * @brief The typeDeTraitement enum : désigne un type de traitement d'image
+     */
+    enum enumTypeDeTraitement{aucun = 0, segmentation = 1, contours = 2, seuillage = 4};
+    enumTypeDeTraitement typeDeTraitement = aucun;
+    /**
+     * @brief imageTraitement : traite l'image passée en paramètre
+     * @param image
+     * @param type
+     */
+    void imageTraitement();
+    /**
+     * @brief findCenter : trouve le point tq 95% des points blancs sont dedans avec un rayon minimum
+     * @return les coordonnées trouvées
+     */
+    cv::Point findCenter(cv::Mat image, cv::Point *inf, cv::Point *sup);
+    cv::Point centerPoint;
 };
 #endif // MAINWINDOW_H

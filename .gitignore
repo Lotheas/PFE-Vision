@@ -1,0 +1,1 @@
+PrivateKey.ppk $ git rm --cached PrivateKey.ppk rm PrivateKey.ppk $ git commit -m Start ignoring PrivateKey

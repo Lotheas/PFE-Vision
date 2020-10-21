@@ -39,6 +39,10 @@ MainWindow::MainWindow(QWidget *parent)
     QObject::connect(ui->radioBtn_1544x1032, SIGNAL(clicked()), this, SLOT(onResButtonChange2()));
     QObject::connect(ui->radioBtn_772x516, SIGNAL(clicked()), this, SLOT(onResButtonChange3()));
 
+    //CheckBox Traitement image
+    QObject::connect(ui->checkBox_contours, SIGNAL(stateChanged(int)), this, SLOT(onCkBxContoursChange(int)));
+    QObject::connect(ui->checkBox_seuillage, SIGNAL(stateChanged(int)), this, SLOT(onCkBxSeuillageChange(int)));
+
     //Threshold traitement image
     cvThreshold = 0;
     cvRatio = 3;
@@ -86,44 +90,19 @@ void MainWindow::onInitClick()
         msg.exec();
     }
 }
+
 void MainWindow::onSingleClick()
 {
 
     qInfo() << "Function \"take_picture\" ";
     if(camera.take_picture(cvImage))
     {
-        qInfo() << "Conversion de l'image au format RGB...";
         qInfo() << "\tDimensions de l'image source : " << cvImage->rows << " x " << cvImage->cols;
         qInfo() << "\tChannels l'image source : " << cvImage->channels();
 
-        //Déclaration de l'image qui sera ensuite affichée dans l'UI
-        cv::Mat cvImageToPrint(cvImage->rows, cvImage->cols, CV_8UC3);
+        imageTraitement();
 
-        qInfo() << "\tDimensions de l'image destination : " << cvImageToPrint.rows << " x " << cvImageToPrint.cols;
-        qInfo() << "\tChannels de l'image destination : " << cvImageToPrint.channels();
-
-        //Traitement de l'image si demandé
-        if(ui->checkBox_traitement->isChecked())
-        {
-            cv::Mat cvImageGray, cvImageBlur;
-            qInfo() << "\tTraitement de l'image...";
-
-            cv::cvtColor( *cvImage, cvImageGray, cv::COLOR_BGRA2GRAY);
-            cv::blur( cvImageGray, cvImageBlur, cv::Size(3,3));
-            cv::Canny(cvImageGray, cvImageToPrint, cvThreshold, cvRatio*cvThreshold, 3);
-
-            qInfo() << "\tConversion de l'image en QImage..." ;
-            qImage = QImage((unsigned char*)cvImageToPrint.data, cvImageToPrint.cols, cvImageToPrint.rows, QImage::Format_Grayscale8);
-        }
-        else
-        {
-            cv::cvtColor( *cvImage, cvImageToPrint, cv::COLOR_BGR2RGB);
-
-            qInfo() << "\tConversion de l'image en QImage..." ;
-            qImage = QImage((unsigned char*)cvImageToPrint.data, cvImageToPrint.cols, cvImageToPrint.rows, QImage::Format_RGB888);
-        }
-
-        QPixmap pixmap(cvImageToPrint.cols, cvImageToPrint.rows);
+        QPixmap pixmap(qImage.width(), qImage.height());
 
         qInfo() << "===================================================";
 
@@ -149,6 +128,7 @@ void MainWindow::onSingleClick()
     //MAJ des bouttons
     ui->btn_stop->setEnabled(false);
 }
+
 void MainWindow::onVideoClick()
 {
     QMessageBox msg;
@@ -225,3 +205,426 @@ void MainWindow::onSliderChange2()
     cvRatio = ui->slider_ratio->value();
     qInfo() << "Ratio set to " << cvRatio;
 }
+
+void MainWindow::onCkBxContoursChange(int state)
+{
+    if(state == Qt::Checked)
+    {
+        typeDeTraitement = (enumTypeDeTraitement)(typeDeTraitement | contours);
+        qInfo() << "Type de traitement : contours activés. \t\tNouveau flag : \t" << typeDeTraitement;
+    }
+    else
+    {
+        typeDeTraitement = (enumTypeDeTraitement)(typeDeTraitement & ~contours);
+        qInfo() << "Type de traitement : contours désactivés. \tNouveau flag : \t" << typeDeTraitement;
+    }
+}
+
+void MainWindow::onCkBxSeuillageChange(int state)
+{
+    if(state == Qt::Checked)
+    {
+        typeDeTraitement = (enumTypeDeTraitement)(typeDeTraitement | seuillage);
+        qInfo() << "Type de traitement : seuillage activés. \t\tNouveau flag : \t" << typeDeTraitement;
+    }
+    else
+    {
+        typeDeTraitement = (enumTypeDeTraitement)(typeDeTraitement & ~seuillage);
+        qInfo() << "Type de traitement : seuillage désactivés. \tNouveau flag : \t" << typeDeTraitement;
+    }
+}
+
+/***************************************************************
+ *                      TRAITEMENT DE L'IMAGE
+ * ************************************************************/
+void MainWindow::imageTraitement()
+{
+    qInfo() << "Traitement de l'image : ";
+
+    //Déclaration de l'image qui sera ensuite affichée dans l'UI
+    cvImageToPrint.create(cvImage->rows, cvImage->cols, CV_8UC3);
+
+    qInfo() << "\tDimensions de l'image destination : " << cvImageToPrint.rows << " x " << cvImageToPrint.cols;
+    qInfo() << "\tChannels de l'image destination : " << cvImageToPrint.channels();
+
+    if(typeDeTraitement & contours)
+    {
+        qInfo() << "\tDétection de contours...";
+
+        cv::Mat cvImageGray, cvImageBlur;
+        qInfo() << "\tTraitement de l'image...";
+
+        if(cvImage->type() != CV_8U)
+            cv::cvtColor( *cvImage, cvImageGray, cv::COLOR_BGRA2GRAY);
+        cv::blur( cvImageGray, cvImageBlur, cv::Size(5,5));
+        cv::Canny(cvImageBlur, cvImageToPrint, cvThreshold, cvRatio*cvThreshold, 3);
+
+        qInfo() << "\tConversion de l'image en QImage..." ;
+        qImage = QImage((unsigned char*)cvImageToPrint.data, cvImageToPrint.cols, cvImageToPrint.rows, QImage::Format_Grayscale8);
+    }
+
+    if(typeDeTraitement & seuillage)
+    {
+        qInfo() << "\tDétection de contours...";
+
+        cv::Mat cvImageGray, cvImageBlur;
+        qInfo() << "\tTraitement de l'image...";
+
+        if(cvImage->type() != CV_8U)
+            cv::cvtColor( *cvImage, cvImageGray, cv::COLOR_BGRA2GRAY);
+        cv::blur( cvImageGray, cvImageBlur, cv::Size(3,3));
+        cv::threshold(cvImageBlur,cvImageToPrint, 127, 255,
+                      ui->checkBox_inversion->isChecked() ? cv::THRESH_BINARY_INV : cv::THRESH_BINARY);
+        //cv::adaptiveThreshold(cvImageBlur, cvImageToPrint, 255, cv::ADAPTIVE_THRESH_GAUSSIAN_C, cv::THRESH_BINARY_INV, 11, 2);
+
+//        uint8_t kdata[] = {1, 1, 1, 1, 1, 1, 1, 1, 1};
+//        cv::Mat kernel(3,3, CV_8U, kdata);
+//        //cv::morphologyEx(cvImageToPrint, cvImageToPrint, cv::MORPH_OPEN, kernel);
+
+        if(ui->checkBox_coord->checkState() == Qt::Checked)
+        {
+
+            cv::Point infGauche;
+            cv::Point supDroit;
+
+            centerPoint = findCenter(cvImageToPrint, &infGauche, &supDroit);
+
+            cv::rectangle(cvImageToPrint, infGauche, supDroit, cv::Scalar(255), 3);
+
+            qInfo() << "\t Point détecté aux coordonnées :\t" << centerPoint.x << "  x  " << centerPoint.y;
+
+            int edgeDistance = 5;
+
+            cv::line(cvImageToPrint, cv::Point(centerPoint.x,edgeDistance), cv::Point(centerPoint.x, cvImageToPrint.rows - edgeDistance), cv::Scalar(255), 3);
+            cv::line(cvImageToPrint, cv::Point(edgeDistance,centerPoint.y), cv::Point( cvImageToPrint.cols - edgeDistance, centerPoint.y), cv::Scalar(255), 3);
+
+        }
+        else if(ui->checkBox_coord->checkState() == Qt::PartiallyChecked)
+        {
+            std::vector<cv::Vec3f> circles;
+            HoughCircles(cvImageToPrint, circles, cv::HOUGH_GRADIENT, 1,
+                         cvImageToPrint.rows/16,  // change this value to detect circles with different distances to each other
+                         100, 30, 1, 500); // change the last two parameters
+            // (min_radius & max_radius) to detect larger circles
+
+            qInfo() << "\t\t" << circles.size() << "\t cercles détectés";
+
+            for( size_t i = 0; i < circles.size(); i++ )
+            {
+                cv::Vec3i c = circles[i];
+                cv::Point center = cv::Point(c[0], c[1]);
+                // circle center
+                cv::circle( cvImageToPrint, center, 1, cv::Scalar(0,100,100), 3, cv::LINE_AA);
+                // circle outline
+                int radius = c[2];
+                cv::circle( cvImageToPrint, center, radius, cv::Scalar(255,0,255), 3, cv::LINE_AA);
+
+                cv::line(cvImageToPrint, cv::Point(center.x,0), cv::Point(center.x, cvImageToPrint.rows), cv::Scalar(255));
+                cv::line(cvImageToPrint, cv::Point(0,center.y), cv::Point( cvImageToPrint.cols, center.y), cv::Scalar(255));
+            }
+        }
+
+        qInfo() << "\tConversion de l'image en QImage..." ;
+        qImage = QImage((unsigned char*)cvImageToPrint.data, cvImageToPrint.cols, cvImageToPrint.rows, QImage::Format_Grayscale8);
+    }
+
+    if(typeDeTraitement == aucun)
+    {
+        qInfo() << "\tAucun traitement d'image à effectuer.";
+        cv::cvtColor( *cvImage, cvImageToPrint, cv::COLOR_BGR2RGB);
+
+        qInfo() << "\tConversion de l'image en QImage..." ;
+        qImage = QImage((unsigned char*)cvImageToPrint.data, cvImageToPrint.cols, cvImageToPrint.rows, QImage::Format_RGB888);
+    }
+}
+
+/***********************
+ *      findCenter
+ * ********************/
+
+cv::Point MainWindow::findCenter(cv::Mat image, cv::Point *inf, cv::Point *sup)
+{
+    qInfo() << "Début de la détection de la zone ";
+    cv::Point result(0,0);
+
+    //Récupération de l'image dans un tableau de données
+    qInfo() << "\tExtraction des données de l'image";
+    int dimx, dimy;
+    dimx = image.cols;
+    dimy = image.rows;
+    int nbrPixels = 0;
+
+    qInfo() << "\tCompte du nombre de pixels valides";
+    //Obtient le nombre de pixels blancs
+    for(int y = 0; y < dimy; y++)
+    {
+        for(int x = 0; x < dimx; x++)
+        {
+            if(image.at<uchar>(y, x))
+                nbrPixels++;
+        }
+    }
+    qInfo() << "\tNombre de pixels total  :\t" << dimx*dimy;
+    qInfo() << "\tNombre de pixels blancs :\t" << nbrPixels;
+
+    //On retiendra 95% des points blancs
+    nbrPixels = (int)((double)nbrPixels * ui->slider_ts->value()/100);
+    qInfo()  << "\tNombre de pixels blancs 95% :\t" << nbrPixels;
+
+    //On fonctionne en dichotomie sur x et y
+    int actualNbr = 0; //Nbr de pixels dans une zone
+    int nextRegion = 0; //Indice de la procahine région (0 si aucune)
+
+    bool regionTrouvee = false; //Flag si plus aucune région ne contient 95% des pixels blancs
+
+    //Bornes pour la dichotomie
+    int xSup = dimx, ySup = dimy;
+    int xInf = 0, yInf = 0;
+
+    qInfo() << "Début de recherceh de la region";
+    int compteur = 1;
+    //Tant que la region n'est pas trouvée
+    while(!regionTrouvee)
+    {
+        qInfo() << "\tItération n° " << compteur;
+        actualNbr = 0;
+        nextRegion = 0;
+
+        /***********************
+         *      Region 1 Bas gauche
+         * ********************/
+
+        for(int x = xInf; x < (xSup + xInf) / 2; x++) //Compte pour chaque région le nombre de pixels blancs
+        {
+            for(int y = yInf; y < (ySup + yInf) / 2; y++)
+            {
+                if(image.at<uchar>(y, x))
+                    actualNbr++;
+            }
+        }
+
+        if(actualNbr >= nbrPixels) //Test du nombre de pixels
+            nextRegion = 1;
+
+        qInfo() << "\t\tRegion 1 : \t" << actualNbr << " / " << nbrPixels;
+
+        if(nextRegion == 0)
+        {
+            /***********************
+             *      Region 2 Bas droit
+             * ********************/
+            actualNbr = 0;
+
+            for(int x = (xSup + xInf) / 2; x < xSup; x++) //Compte pour chaque région le nombre de pixels blancs
+            {
+                for(int y = yInf; y < (ySup + yInf) / 2; y++)
+                {
+                    if(image.at<uchar>(y, x))
+                        actualNbr++;
+                }
+            }
+
+            if(actualNbr >= nbrPixels) //Test du nombre de pixels
+                nextRegion = 2;
+
+            qInfo() << "\t\tRegion 2 : \t" << actualNbr << " / " << nbrPixels;
+        }
+
+
+        if(nextRegion == 0)
+        {
+            actualNbr = 0;
+            /***********************
+             *      Region 3 haut gauche
+             * ********************/
+            for(int x = xInf; x < (xSup + xInf) / 2; x++) //Compte pour chaque région le nombre de pixels blancs
+            {
+                for(int y = (ySup + yInf) / 2; y < ySup; y++)
+                {
+                    if(image.at<uchar>(y, x))
+                        actualNbr++;
+                }
+            }
+
+            if(actualNbr >= nbrPixels) //Test du nombre de pixels
+                nextRegion = 3;
+
+            qInfo() << "\t\tRegion 3 : \t" << actualNbr << " / " << nbrPixels;
+        }
+
+        if(nextRegion == 0)
+        {
+            actualNbr = 0;
+            /***********************
+             *      Region 4 haut droit
+             * ********************/
+            for(int x = (xSup + xInf) / 2; x < xSup; x++) //Compte pour chaque région le nombre de pixels blancs
+            {
+                for(int y = (ySup + yInf) / 2; y < ySup; y++)
+                {
+                    if(image.at<uchar>(y, x))
+                        actualNbr++;
+                }
+            }
+
+            if(actualNbr >= nbrPixels) //Test du nombre de pixels
+                nextRegion = 4;
+
+            qInfo() << "\t\tRegion 4 : \t" << actualNbr << " / " << nbrPixels;
+        }
+
+        if(nextRegion == 0)
+        {
+            actualNbr = 0;
+            /***********************
+             *      Region 5 bas
+             * ********************/
+            for(int x = xInf; x < xSup; x++) //Compte pour chaque région le nombre de pixels blancs
+            {
+                for(int y = yInf; y < (ySup + yInf) / 2; y++)
+                {
+                    if(image.at<uchar>(y, x))
+                        actualNbr++;
+                }
+            }
+
+            if(actualNbr >= nbrPixels) //Test du nombre de pixels
+                nextRegion = 5;
+
+            qInfo() << "\t\tRegion 5 : \t" << actualNbr << " / " << nbrPixels;
+        }
+
+        if(nextRegion == 0)
+        {
+            actualNbr = 0;
+            /***********************
+             *      Region 6 haut
+             * ********************/
+            for(int x = xInf; x < xSup; x++) //Compte pour chaque région le nombre de pixels blancs
+            {
+                for(int y = (ySup + yInf) / 2; y < ySup; y++)
+                {
+                    if(image.at<uchar>(y, x))
+                        actualNbr++;
+                }
+            }
+
+            if(actualNbr >= nbrPixels) //Test du nombre de pixels
+                nextRegion = 6;
+
+            qInfo() << "\t\tRegion 6 : \t" << actualNbr << " / " << nbrPixels;
+        }
+
+        if(nextRegion == 0)
+        {
+            actualNbr = 0;
+            /***********************
+             *      Region 7 gauche
+             * ********************/
+            for(int x = xInf; x < (xSup + xInf) / 2; x++) //Compte pour chaque région le nombre de pixels blancs
+            {
+                for(int y = yInf; y < ySup; y++)
+                {
+                    if(image.at<uchar>(y, x))
+                        actualNbr++;
+                }
+            }
+
+            if(actualNbr >= nbrPixels) //Test du nombre de pixels
+                nextRegion = 7;
+
+            qInfo() << "\t\tRegion 7 : \t" << actualNbr << " / " << nbrPixels;
+        }
+
+        if(nextRegion == 0)
+        {
+            actualNbr = 0;
+            /***********************
+             *      Region 8 droit
+             * ********************/
+            for(int x = (xSup + xInf) / 2; x < xSup; x++) //Compte pour chaque région le nombre de pixels blancs
+            {
+                for(int y = yInf; y < ySup; y++)
+                {
+                    if(image.at<uchar>(y, x))
+                        actualNbr++;
+                }
+            }
+
+            if(actualNbr >= nbrPixels) //Test du nombre de pixels
+                nextRegion = 8;
+
+            qInfo() << "\t\tRegion 8 : \t" << actualNbr << " / " << nbrPixels;
+        }
+
+        /***********************************************
+         *      Détermination de la nouvelle région
+         * *********************************************/
+        if(nextRegion == 0)
+            regionTrouvee = true;
+        else
+        {
+            qInfo() << "\t\tNextRegion : \t" << nextRegion;
+            switch(nextRegion){
+            case 1 :
+                xSup = (xSup + xInf) / 2;
+                ySup = (ySup + yInf) / 2;
+                break;
+            case 2 :
+                xInf = (xSup + xInf) / 2;
+                ySup = (ySup + yInf) / 2;
+                break;
+            case 3 :
+                xSup = (xSup + xInf) / 2;
+                yInf = (ySup + yInf) / 2;
+                break;
+            case 4 :
+                xInf = (xSup + xInf) / 2;
+                yInf = (ySup + yInf) / 2;
+                break;
+            case 5 :
+                ySup = (ySup + yInf) / 2;
+                break;
+            case 6 :
+                yInf = (ySup + yInf) / 2;
+                break;
+            case 7 :
+                xSup = (xSup + xInf) / 2;
+                break;
+            case 8 :
+                xInf = (xSup + xInf) / 2;
+                break;
+            default :
+                qInfo() << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
+                qInfo() << "!                                                                                                                       !";
+                qInfo() << "!   Dommage! Le mec qui a codé ça est une grosse tanche! : \"nextRegion\" est foireux dans la fonction \"findCenter\"   !";
+                qInfo() << "!                                                                                                                       !";
+                qInfo() << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
+            }
+        }
+
+        qInfo() << "\tCoordonnées retenues : ";
+        qInfo() << "\t\tX\t Inf :" << xInf;
+        qInfo() << "\t\t\t\t Sup :" << xSup;
+        qInfo() << "\t\tY\t Inf :" << yInf;
+        qInfo() << "\t\t\t\t Sup :" << ySup;
+        compteur++;
+
+    }
+
+    qInfo() << "\t+++ Recherche terminée +++";
+    result = cv::Point((xSup + xInf)/2, (ySup + yInf)/2 );
+
+    inf->x = xInf;
+    inf->y = yInf;
+    sup->x = xSup;
+    sup->y = ySup;
+
+    return result;
+}
+
+
+
+
+
+
