@@ -273,7 +273,7 @@ void MainWindow::imageTraitement()
         if(cvImage->type() != CV_8U)
             cv::cvtColor( *cvImage, cvImageGray, cv::COLOR_BGRA2GRAY);
         cv::blur( cvImageGray, cvImageBlur, cv::Size(3,3));
-        cv::threshold(cvImageBlur,cvImageToPrint, 127, 255,
+        cv::threshold(cvImageBlur,cvImageToPrint, ui->slider_ts->value(), 255,
                       ui->checkBox_inversion->isChecked() ? cv::THRESH_BINARY_INV : cv::THRESH_BINARY);
         //cv::adaptiveThreshold(cvImageBlur, cvImageToPrint, 255, cv::ADAPTIVE_THRESH_GAUSSIAN_C, cv::THRESH_BINARY_INV, 11, 2);
 
@@ -289,15 +289,24 @@ void MainWindow::imageTraitement()
 
             centerPoint = findCenter(cvImageToPrint, &infGauche, &supDroit);
 
-            cv::rectangle(cvImageToPrint, infGauche, supDroit, cv::Scalar(255), 3);
-
             qInfo() << "\t Point détecté aux coordonnées :\t" << centerPoint.x << "  x  " << centerPoint.y;
 
             int edgeDistance = 5;
 
-            cv::line(cvImageToPrint, cv::Point(centerPoint.x,edgeDistance), cv::Point(centerPoint.x, cvImageToPrint.rows - edgeDistance), cv::Scalar(255), 3);
-            cv::line(cvImageToPrint, cv::Point(edgeDistance,centerPoint.y), cv::Point( cvImageToPrint.cols - edgeDistance, centerPoint.y), cv::Scalar(255), 3);
+            if(ui->checkBox_onRealImage->isChecked())
+            {
+                cv::rectangle(*cvImage, infGauche, supDroit, cv::Scalar(255,255,0), 3);
 
+                cv::line(*cvImage, cv::Point(centerPoint.x,edgeDistance), cv::Point(centerPoint.x, cvImageToPrint.rows - edgeDistance), cv::Scalar(255,255,0), 3);
+                cv::line(*cvImage, cv::Point(edgeDistance,centerPoint.y), cv::Point( cvImageToPrint.cols - edgeDistance, centerPoint.y), cv::Scalar(255,255,0), 3);
+            }
+            else
+            {
+                cv::rectangle(cvImageToPrint, infGauche, supDroit, cv::Scalar(255), 3);
+
+                cv::line(cvImageToPrint, cv::Point(centerPoint.x,edgeDistance), cv::Point(centerPoint.x, cvImageToPrint.rows - edgeDistance), cv::Scalar(255), 3);
+                cv::line(cvImageToPrint, cv::Point(edgeDistance,centerPoint.y), cv::Point( cvImageToPrint.cols - edgeDistance, centerPoint.y), cv::Scalar(255), 3);
+            }
         }
         else if(ui->checkBox_coord->checkState() == Qt::PartiallyChecked)
         {
@@ -325,7 +334,16 @@ void MainWindow::imageTraitement()
         }
 
         qInfo() << "\tConversion de l'image en QImage..." ;
-        qImage = QImage((unsigned char*)cvImageToPrint.data, cvImageToPrint.cols, cvImageToPrint.rows, QImage::Format_Grayscale8);
+        if(ui->checkBox_onRealImage->isChecked())
+        {
+            cv::cvtColor( *cvImage, *cvImage, cv::COLOR_BGR2RGB);
+            qImage = QImage((unsigned char*)cvImage->data, cvImage->cols, cvImage->rows, QImage::Format_RGB888);
+        }
+        else
+        {
+            qImage = QImage((unsigned char*)cvImageToPrint.data, cvImageToPrint.cols, cvImageToPrint.rows, QImage::Format_Grayscale8);
+        }
+
     }
 
     if(typeDeTraitement == aucun)

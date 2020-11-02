@@ -237,6 +237,13 @@
       </property>
      </widget>
     </item>
+    <item row="0" column="6">
+     <widget class="QCheckBox" name="checkBox_onRealImage">
+      <property name="text">
+       <string>Sur l'image de base</string>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
