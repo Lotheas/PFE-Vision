@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/icons/arrow">
+        <file>Icons/fleche_bas.png</file>
+        <file>Icons/fleche_droite.png</file>
+        <file>Icons/fleche_gauche.png</file>
+        <file>Icons/fleche_haut.png</file>
+    </qresource>
+</RCC>
