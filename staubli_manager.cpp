@@ -2,9 +2,9 @@
 
 staubli_manager::staubli_manager()
 {
-    currentCoord.setX(800);
-    currentCoord.setY(-40);
-    currentCoord.setZ(300);
+    currentCoord.setX(400);
+    currentCoord.setY(-100);
+    currentCoord.setZ(-400);
 
     targetCoord = currentCoord;
 }

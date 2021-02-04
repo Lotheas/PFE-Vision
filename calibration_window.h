@@ -197,9 +197,24 @@ private slots :
     void on_takePicture();
 
     ///
-    /// \brief on_calibrate
+    /// \brief on_calibrate : effectue les calculs pour le calibrage en ofnction des données entrées
     ///
     void on_calibrate();
+
+    ///
+    /// \brief on_editOffX : permet de modifier les paramètre calculés
+    ///
+    void on_editOffX();
+
+    ///
+    /// \brief on_editOffY : permet de modifier les paramètre calculés
+    ///
+    void on_editOffY();
+
+    ///
+    /// \brief on_editOffZ : permet de modifier les paramètre calculés
+    ///
+    void on_editOffZ();
 
 };
 

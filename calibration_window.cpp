@@ -86,6 +86,9 @@ calibration_window::calibration_window(QWidget *parent, camera_support *cam, sta
     QObject::connect(ui->btn_calibrate, SIGNAL(clicked()), this, SLOT(on_calibrate()));
 
 
+    QObject::connect(ui->btn_offX, SIGNAL(clicked()), this, SLOT(on_editOffX()));
+
+
 }
 
 calibration_window::~calibration_window()
@@ -385,6 +388,45 @@ void calibration_window::on_calibrate()
 
     print("Offset Y : " + QString::number(offsetY));
 }
+
+void calibration_window::on_editOffX()
+{
+    changeData("Correction Offset X",
+               "Nouvelle valeur de Offset X en mm : ",
+               &offsetX,
+               "Offset X",
+               "mm",
+               -300,
+               300,
+               ui->txt_offX);
+
+}
+
+void calibration_window::on_editOffY()
+{
+    changeData("Correction Offset Y",
+               "Nouvelle valeur de Offset Y en mm : ",
+               &offsetY,
+               "Offset Y",
+               "mm",
+               -300,
+               300,
+               ui->txt_offY);
+
+}
+
+void calibration_window::on_editOffZ()
+{
+    changeData("Correction Offset Z",
+               "Nouvelle valeur de Offset Z en mm : ",
+               &offsetZ,
+               "Offset Z",
+               "mm",
+               -300,
+               300,
+               ui->txt_offX);
+
+}
 /**********************************************************************************************
                                           _ _
                                          | (_)
@@ -458,7 +500,7 @@ cv::Mat calibration_window::drawCircle(cv::Mat img)
 {
     Mat res(img.clone());
 
-    circle(res, circleCoord, circleRadius, cv::Scalar(255,0,0), image.rows/200);
+    circle(res, circleCoord, circleRadius, cv::Scalar(255,255,0), 2);
     line(res, Point(circleCoord.x,0), Point(circleCoord.x, res.rows - 1), Scalar(0,255,255), 1);
     line(res, Point(0, circleCoord.y), Point(res.cols - 1, circleCoord.y), Scalar(0,255,255), 1);
 

@@ -48,8 +48,15 @@ void comm::envoie(qfloat16 x,qfloat16 y, qfloat16 z)
 
 void comm::Connection(QString serveurIP,qint16 serveurPort)
 {
+
+    qInfo() << "Connexion à : " << serveurIP << ":" << serveurPort;
     socket = new QTcpSocket();
     socket->connectToHost(serveurIP, serveurPort);
+
+    if(socket->waitForConnected(3000))
+        qInfo() << "Connected!";
+    else
+        qInfo().noquote() << "Connexion failed : " << socket->errorString();
 }
 
 QString comm::erreurSocket(QAbstractSocket::SocketError erreur)
@@ -73,3 +80,5 @@ QString comm::erreurSocket(QAbstractSocket::SocketError erreur)
     }
     return MessageErreur;
 }
+
+

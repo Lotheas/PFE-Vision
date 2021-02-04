@@ -3,6 +3,8 @@
 
 #include <QtWidgets>
 #include <QtNetwork>
+#include <QDebug>
+#include <QMessageBox>
 //#include "ui_form.h"
 
 class comm
@@ -18,6 +20,7 @@ private:
     quint16 tailleMessage;
     QString serveurIP;
     qint16 serveurPort;
+    void displayError(QAbstractSocket::SocketError socketError);
 
 
 
