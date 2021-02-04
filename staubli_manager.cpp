@@ -4,7 +4,7 @@ staubli_manager::staubli_manager()
 {
     currentCoord.setX(400);
     currentCoord.setY(-100);
-    currentCoord.setZ(-400);
+    currentCoord.setZ(157);
 
     targetCoord = currentCoord;
 }
@@ -47,4 +47,6 @@ void staubli_manager::goToTarget()
     currentCoord.setZ(targetCoord.z());
 
     communication.envoie(currentCoord.x(),  currentCoord.y(), currentCoord.z());
+
+    qInfo() << "Send coord : " << "currentCoord." << currentCoord.x() << " : " << currentCoord.y() << " : " << currentCoord.z();
 }

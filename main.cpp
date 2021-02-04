@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
     //w.show();
 
     camera_support camera;
-    //camera.initilialize();
+    camera.initilialize();
 
     staubli_manager staubli;
 

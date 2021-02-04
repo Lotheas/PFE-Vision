@@ -5,7 +5,7 @@ comm::comm()
     //connection au serveur
 
     //Mettre l'IP
-    QString serveurIP ="192.168.0.254";
+    QString serveurIP ="192.168.2.1";
 
     //Mettre le port
     qint16 serveurPort=8500;
@@ -22,27 +22,41 @@ void comm::envoie(qfloat16 x,qfloat16 y, qfloat16 z)
 
     // Montrer le message d'erreur et faire un condition dessus
 
-    if(MessageErreur==0)
+    if(MessageErreur == "0")
     {
         QByteArray paquet;
         QDataStream out(&paquet, QIODevice::WriteOnly);
+        out.setVersion(QDataStream::Qt_5_1);
 
+        QByteArray byteArray = QByteArray::fromRawData(reinterpret_cast<char *>(&x), sizeof(byteArray));
+        qInfo() << byteArray.toHex();
+        byteArray.append(QByteArray::fromRawData(reinterpret_cast<char *>(&y), sizeof(byteArray)));
+        byteArray.append(QByteArray::fromRawData(reinterpret_cast<char *>(&z), sizeof(byteArray)));
         // On prépare le paquet à envoyer
 
 
         //0 au début du paquet pour laisser une place pour écrire la taille
-        out << (quint16) 0;
+        //out << (quint16) 0;
 
         // ajout du message
-        out << x;
-        out << y;
-        out << z;
+        out << (double)x;
+        qInfo() << paquet.toHex();
+        out << (double)y;
+        qInfo() << paquet.toHex();
+        out << (double)z;
+        qInfo() << paquet.toHex();
         // replacement au début pour changer le 0
-        out.device()->seek(0);
+        //out.device()->seek(0);
         // changement du 0 par la longueur du paquet
-        out << (quint16) (paquet.size() - sizeof(quint16));
+        //out << (double) (paquet.size() - sizeof(double));
+
+        qInfo() << byteArray.toHex();
 
         socket->write(paquet); // On envoie le paquet
+    }
+    else
+    {
+        qInfo() << "Message erreur != 0";
     }
 }
 
@@ -53,7 +67,7 @@ void comm::Connection(QString serveurIP,qint16 serveurPort)
     socket = new QTcpSocket();
     socket->connectToHost(serveurIP, serveurPort);
 
-    if(socket->waitForConnected(3000))
+    if(socket->waitForConnected(20000))
         qInfo() << "Connected!";
     else
         qInfo().noquote() << "Connexion failed : " << socket->errorString();
@@ -75,8 +89,6 @@ QString comm::erreurSocket(QAbstractSocket::SocketError erreur)
         case QAbstractSocket::RemoteHostClosedError:
             MessageErreur="RemoteHostClosed";
             break;
-        default:
-            MessageErreur="Autres";
     }
     return MessageErreur;
 }
