@@ -93,4 +93,12 @@ QString comm::erreurSocket(QAbstractSocket::SocketError erreur)
     return MessageErreur;
 }
 
+bool comm::connected()
+{
+    if(socket->state() == QAbstractSocket::ConnectedState)
+        return true;
+    else
+        return false;
+}
+
 

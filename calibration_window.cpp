@@ -22,6 +22,17 @@ calibration_window::calibration_window(QWidget *parent, camera_support *cam, sta
     camera = *cam;
     staubli = stbl;
 
+    if(staubli->online())
+    {
+        ui->lbl_staubliOnlineTxt->setText("Online");
+        ui->lbl_staubliOnlineColor->setStyleSheet("background-color: rgb(0, 255, 0);");
+    }
+    else
+    {
+        ui->lbl_staubliOnlineTxt->setText("Offline");
+        ui->lbl_staubliOnlineColor->setStyleSheet("background-color: rgb(255, 0, 0);");
+    }
+
     //Valeurs par défaut
     focale = 12.0;
     dimX = camera.getResolution()[0];
@@ -368,8 +379,8 @@ void calibration_window::on_calibrate()
     double val1 = distH - diamCercle * dimX * focale / (2 * circleRadius) / senDimX - focale;
     double val2 = distH - diamCercle * dimY * focale / (2 * circleRadius) / senDimY - focale;
 
-    print(" val 1 : " + QString::number(val1));
-    print(" val 2 : " + QString::number(val2));
+    //print(" val 1 : " + QString::number(val1));
+    //print(" val 2 : " + QString::number(val2));
 
     offsetZ = (val1 + val2) / 2;
     print("Offset Z : " + QString::number(offsetZ));
@@ -378,8 +389,8 @@ void calibration_window::on_calibrate()
 
     double opx = circleCoord.x - (double)dimX / 2;
     double opy = circleCoord.y - (double)dimY / 2;
-    print("OP X : " + QString::number(opx));
-    print("OP Y : " + QString::number(opy));
+    //print("OP X : " + QString::number(opx));
+    //print("OP Y : " + QString::number(opy));
 
     offsetX = senDimX / 2 * hc * opx / focale / (dimX / 2);
     print("Offset X : " + QString::number(offsetX));
@@ -387,6 +398,10 @@ void calibration_window::on_calibrate()
     offsetY = senDimY / 2 * hc * opy / focale / (dimY / 2);
 
     print("Offset Y : " + QString::number(offsetY));
+
+    ui->txt_offX->setText(QString::number(offsetX));
+    ui->txt_offY->setText(QString::number(offsetY));
+    ui->txt_offZ->setText(QString::number(offsetZ));
 }
 
 void calibration_window::on_editOffX()

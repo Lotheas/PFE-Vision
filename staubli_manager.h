@@ -18,6 +18,8 @@ public:
 
     void goToTarget();
 
+    bool online();
+
 
 private:
     comm communication;

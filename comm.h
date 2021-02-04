@@ -14,6 +14,7 @@ public:
     void Connection(QString serveurIP,qint16 serveurPort);
     QString erreurSocket(QAbstractSocket::SocketError erreur);
     void envoie(qfloat16 x,qfloat16 y, qfloat16 z);
+    bool connected();
 
 private:
     QTcpSocket *socket; // Représente le serveur

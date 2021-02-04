@@ -50,3 +50,12 @@ void staubli_manager::goToTarget()
 
     qInfo() << "Send coord : " << "currentCoord." << currentCoord.x() << " : " << currentCoord.y() << " : " << currentCoord.z();
 }
+
+bool staubli_manager::online()
+{
+    if(communication.connected())
+        return true;
+    else
+        return false;
+
+}
