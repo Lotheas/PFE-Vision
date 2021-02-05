@@ -27,12 +27,17 @@
 #include <QDebug>
 #include "camera_support.h"
 
+#include "calibration_window.h"
+
 /****************************************
  *  OpenCV includes
  * *************************************/
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc.hpp>
+
+#include "staubli_manager.h"
+#include "im_traitement.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -69,14 +74,6 @@ private slots:
          * @brief onSingleClick : Met à jour l'interface et effectue une capture avec la caméra
          */
     void onSingleClick();
-        /**
-         * @brief onVideoClick : Met à jour l'interface
-         */
-    void onVideoClick();
-        /**
-         * @brief onStopClick : Met à jour l'interface
-         */
-    void onStopClick();
         /**
          * @brief onDiscoClick : Met à jour l'interface et déconnecte la caméra
          */
@@ -118,6 +115,8 @@ private slots:
      */
     void onCkBxSeuillageChange(int state);
 
+    void onOffsetChange(QVector3D offs);
+
 /****************************************
  *  Attributs privés
  * *************************************/
@@ -129,6 +128,12 @@ private:
     void setRadioBtnState(bool state);
     Ui::MainWindow *ui;
     QRadioButton *radioRes[4];
+
+    QVector3D offsets;
+
+    calibration_window *w2;
+
+    staubli_manager staubli;
 
     QImage qImage;
 

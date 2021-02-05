@@ -402,6 +402,12 @@ void calibration_window::on_calibrate()
     ui->txt_offX->setText(QString::number(offsetX));
     ui->txt_offY->setText(QString::number(offsetY));
     ui->txt_offZ->setText(QString::number(offsetZ));
+
+    offsets.setX(offsetX);
+    offsets.setY(offsetY);
+    offsets.setZ(offsetZ);
+
+    emit offsetsChanged(offsets);
 }
 
 void calibration_window::on_editOffX()
@@ -414,6 +420,9 @@ void calibration_window::on_editOffX()
                -300,
                300,
                ui->txt_offX);
+
+    offsets.setX(offsetX);
+    emit offsetsChanged(offsets);
 
 }
 
@@ -428,6 +437,9 @@ void calibration_window::on_editOffY()
                300,
                ui->txt_offY);
 
+    offsets.setY(offsetY);
+    emit offsetsChanged(offsets);
+
 }
 
 void calibration_window::on_editOffZ()
@@ -439,7 +451,10 @@ void calibration_window::on_editOffZ()
                "mm",
                -300,
                300,
-               ui->txt_offX);
+               ui->txt_offZ);
+
+    offsets.setZ(offsetZ);
+    emit offsetsChanged(offsets);
 
 }
 /**********************************************************************************************

@@ -103,6 +103,9 @@ private:
     double offsetX, offsetY, offsetZ;
 
 
+    QVector3D offsets;
+
+
     /****************************************
      *  Méthodes
      * *************************************/
@@ -216,6 +219,8 @@ private slots :
     ///
     void on_editOffZ();
 
+signals:
+    void offsetsChanged(QVector3D);
 };
 
 #endif // CALIBRATION_WINDOW_H
