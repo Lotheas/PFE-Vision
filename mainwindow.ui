@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1169</width>
-    <height>714</height>
+    <width>1142</width>
+    <height>799</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>700</width>
-    <height>700</height>
+    <height>200</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -22,6 +22,13 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="2" column="0">
+     <widget class="QPushButton" name="btn_calibrage">
+      <property name="text">
+       <string>Calibrage</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0">
      <widget class="QGroupBox" name="groupBox_resolution">
       <property name="minimumSize">
        <size>
@@ -86,13 +93,13 @@
       </widget>
      </widget>
     </item>
-    <item row="3" column="0">
+    <item row="4" column="0">
      <widget class="QPushButton" name="btn_single">
       <property name="enabled">
        <bool>false</bool>
       </property>
       <property name="text">
-       <string>Take picture</string>
+       <string>Take first picture</string>
       </property>
      </widget>
     </item>
@@ -113,26 +120,45 @@
       </property>
      </widget>
     </item>
-    <item row="2" column="1" colspan="8">
-     <widget class="QLabel" name="lbl_img">
+    <item row="3" column="1">
+     <widget class="QLabel" name="lbl_imgInit">
       <property name="minimumSize">
        <size>
-        <width>700</width>
-        <height>700</height>
+        <width>500</width>
+        <height>334</height>
        </size>
       </property>
       <property name="frameShape">
-       <enum>QFrame::NoFrame</enum>
+       <enum>QFrame::Box</enum>
       </property>
       <property name="lineWidth">
-       <number>3</number>
+       <number>1</number>
       </property>
       <property name="text">
        <string>TextLabel</string>
       </property>
      </widget>
     </item>
-    <item row="0" column="1" rowspan="2" colspan="3">
+    <item row="3" column="2">
+     <widget class="QLabel" name="lbl_imgPre">
+      <property name="minimumSize">
+       <size>
+        <width>500</width>
+        <height>334</height>
+       </size>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
+      </property>
+      <property name="lineWidth">
+       <number>1</number>
+      </property>
+      <property name="text">
+       <string>TextLabel</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1" rowspan="3">
      <widget class="QGroupBox" name="groupBox">
       <property name="minimumSize">
        <size>
@@ -141,15 +167,15 @@
        </size>
       </property>
       <property name="title">
-       <string>GroupBox</string>
+       <string>Traitement réliminaire</string>
       </property>
       <widget class="QWidget" name="gridLayoutWidget">
        <property name="geometry">
         <rect>
-         <x>20</x>
-         <y>10</y>
-         <width>341</width>
-         <height>41</height>
+         <x>10</x>
+         <y>20</y>
+         <width>481</width>
+         <height>53</height>
         </rect>
        </property>
        <layout class="QGridLayout" name="gridLayout_2">
@@ -191,22 +217,54 @@
           </property>
          </widget>
         </item>
-        <item row="0" column="1">
+        <item row="0" column="2" rowspan="3">
+         <widget class="QPushButton" name="btn_imgPre">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>Pretraitement</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0" rowspan="2" colspan="2">
          <widget class="QCheckBox" name="checkBox_inversion">
           <property name="text">
            <string>Inversion</string>
           </property>
          </widget>
         </item>
-        <item row="0" column="0">
-         <widget class="QCheckBox" name="checkBox_seuillage">
-          <property name="text">
-           <string>Seuillage</string>
-          </property>
-         </widget>
-        </item>
        </layout>
       </widget>
+     </widget>
+    </item>
+    <item row="4" column="1">
+     <widget class="QLabel" name="lbl_imgRes">
+      <property name="minimumSize">
+       <size>
+        <width>500</width>
+        <height>334</height>
+       </size>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
+      </property>
+      <property name="lineWidth">
+       <number>1</number>
+      </property>
+      <property name="text">
+       <string>TextLabel</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="2">
+     <widget class="QPushButton" name="btn_traj">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="text">
+       <string>Génération des trajectoires</string>
+      </property>
      </widget>
     </item>
    </layout>

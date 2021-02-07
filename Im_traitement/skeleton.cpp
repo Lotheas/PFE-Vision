@@ -13,13 +13,13 @@ QString endlQt2 = "\n";
 void morphological_skeleton(Mat* image)
 {
 	//Negatif
-	for (int i = 0; i < image->rows; i++)
-	{
-		for (int j = 0; j < image->cols; j++)
-		{
-			image->at<uchar>(i, j) = 255 - image->at<uchar>(i, j);
-		}
-	}
+//	for (int i = 0; i < image->rows; i++)
+//	{
+//		for (int j = 0; j < image->cols; j++)
+//		{
+//			image->at<uchar>(i, j) = 255 - image->at<uchar>(i, j);
+//		}
+//	}
 
 	//Sauvegarde de l'image de base pour l'affichage post-algorithme
 	Mat image2 = image->clone();
@@ -39,12 +39,7 @@ void morphological_skeleton(Mat* image)
 
 	clock_t start = clock();
 	//Morphological skeleton
-    qInfo() << "\tBinarisation de l'image..." << endlQt2;
-	threshold(*image, *image, 12, 255, THRESH_BINARY);
 	Mat skeleton = image->clone();
-
-	const int elem_size = 3;
-	
 
 	const int familySize = 8;
 
@@ -212,7 +207,7 @@ Mat amincissement(Mat image, Mat element)
 	}
     //qInfo() << "Nombre de points à supprimer : " << pointsToRemove.size() << endlQt2;
 	//On supprime les points sélectionnés
-	for (int i = 0; i < pointsToRemove.size(); i++)
+    for (uint i = 0; i < pointsToRemove.size(); i++)
 	{
 
 		/*try

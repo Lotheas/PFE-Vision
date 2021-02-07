@@ -22,19 +22,21 @@ vector<vector<Point>> im_traitement::trajectory_generation(Mat image)
 
     if (DOWNSCALE)
     {
-        resize(image, image, Size(image.size().width * 0.5, image.size().height * 0.5), 0.5, 0.5, INTER_NEAREST_EXACT);
+        resize(image, image, Size(image.size().width / SCALE, image.size().height * 1 / SCALE), 1 / SCALE, 1 / SCALE, INTER_NEAREST_EXACT);
     }
 
-    showCurrentPoint(image, Point(0, 0), SCALE);
+    //showCurrentPoint(image, Point(0, 0), SCALE);
 
     Mat skeleton = image.clone();
 
     printVoidSeparator('*');
 
+    //emit stepChanged(2);
+
     //sqeulettisation
     morphological_skeleton(&skeleton);
 
-    showCurrentPoint(skeleton, Point(0, 0), SCALE);
+    //showCurrentPoint(skeleton, Point(0, 0), SCALE);
 
     printVoidSeparator('*');
 
@@ -44,7 +46,7 @@ vector<vector<Point>> im_traitement::trajectory_generation(Mat image)
 
     printVoidSeparator('*');
 
-    drawTrajectories(skeleton, trajectoires, 7, SCALE);
+    //drawTrajectories(skeleton, trajectoires, 7, SCALE);
 
     //On unifie les trajectoires pour avoir des trajectoires continues
     vector<vector<Point>> unifiedTrajectories;
@@ -52,7 +54,7 @@ vector<vector<Point>> im_traitement::trajectory_generation(Mat image)
     printSeparator("Unification des trajectoires");
     fusionTrajectories(trajectoires, &unifiedTrajectories, 5);
 
-    drawTrajectories(skeleton, unifiedTrajectories, 7, SCALE);
+    //drawTrajectories(skeleton, unifiedTrajectories, 7, SCALE);
 
     //On allège la trajectoire
     vector<vector<Point>> lighterTrajectories;
@@ -60,7 +62,22 @@ vector<vector<Point>> im_traitement::trajectory_generation(Mat image)
     printSeparator("Allegement des trajectoires");
     lightenTrajectories(unifiedTrajectories, &lighterTrajectories, 10);
 
-    drawTrajectories(skeleton, lighterTrajectories, 1, SCALE);
+    if(DOWNSCALE)
+    {
+        for (uint i = 0; i < lighterTrajectories.size(); i++)
+        {
+
+            for (uint j = 0; j < lighterTrajectories[i].size(); j++)
+            {
+                lighterTrajectories[i][j].x *= SCALE;
+                lighterTrajectories[i][j].y *= SCALE;
+            }
+        }
+    }
+
+    //drawTrajectories(skeleton, lighterTrajectories, 1, SCALE);
+
+    destroyAllWindows();
 
     return lighterTrajectories;
 }

@@ -71,9 +71,17 @@ private slots:
          */
     void onInitClick();
         /**
+         * @brief onCalibrateClick : lance la fenetre de calibrage
+         */
+    void onCalibrateClick();
+        /**
          * @brief onSingleClick : Met à jour l'interface et effectue une capture avec la caméra
          */
     void onSingleClick();
+        /**
+         * @brief onImgPreClick : permet de réaliser le traitement préliminaire de l'image et de l'afficher
+         */
+    void onImgPreClick();
         /**
          * @brief onDiscoClick : Met à jour l'interface et déconnecte la caméra
          */
@@ -115,6 +123,8 @@ private slots:
      */
     void onCkBxSeuillageChange(int state);
 
+    void onGeneTrajClick();
+
     void onOffsetChange(QVector3D offs);
 
 /****************************************
@@ -129,6 +139,10 @@ private:
     Ui::MainWindow *ui;
     QRadioButton *radioRes[4];
 
+    im_traitement im_trait;
+
+    std::vector<std::vector<cv::Point>> trajectories;
+
     QVector3D offsets;
 
     calibration_window *w2;
@@ -136,6 +150,9 @@ private:
     staubli_manager staubli;
 
     QImage qImage;
+    QImage qImagePre;
+    QImage qImageSkel;
+    QImage qImageRes;
 
     camera_support camera;
 
@@ -143,18 +160,16 @@ private:
     int cvRatio;
 
     cv::Mat *cvImage;
+    cv::Mat cvImagePre;
+    cv::Mat cvImageSkel;
+    cv::Mat cvImageRes;
     cv::Mat cvImageToPrint;
     /**
      * @brief The typeDeTraitement enum : désigne un type de traitement d'image
      */
     enum enumTypeDeTraitement{aucun = 0, segmentation = 1, contours = 2, seuillage = 4};
     enumTypeDeTraitement typeDeTraitement = aucun;
-    /**
-     * @brief imageTraitement : traite l'image passée en paramètre
-     * @param image
-     * @param type
-     */
-    void imageTraitement();
+
     /**
      * @brief findCenter : trouve le point tq 95% des points blancs sont dedans avec un rayon minimum
      * @return les coordonnées trouvées

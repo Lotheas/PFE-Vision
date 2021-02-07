@@ -84,11 +84,11 @@ void drawTrajectories(cv::Mat skeleton, std::vector<std::vector<cv::Point>> traj
 	//initialisation pour l'utilisation de rand()
 	srand(time(NULL));
 
-	for (int i = 0; i < trajectories.size(); i++)
+    for (uint i = 0; i < trajectories.size(); i++)
 	{
 		Vec3b couleur(rand() % 205 + 50, rand() % 205 + 50, rand() % 205 + 50);
 
-		for (int j = 0; j < trajectories[i].size(); j++)
+        for (uint j = 0; j < trajectories[i].size(); j++)
 		{
 
 			drawing.at<Vec3b>(trajectories[i][j]) = couleur;
@@ -208,13 +208,13 @@ void lightenTrajectories(vector<vector<Point>> trajIn, vector<vector<Point>>* tr
 		int index = 0;
 		while (index + spacing < out[i].size())
 		{
-			for (int j = 0; j < spacing; j++)
+            for (uint j = 0; j < spacing; j++)
 			{
 				out[i].erase(out[i].begin() + index + 1);
 			}
 			index++;
 		}
-		for (int j = index; j < out[i].size() - 1; j++)
+        for (uint j = index; j < out[i].size() - 1; j++)
 		{
 			out[i].erase(out[i].begin() + index + 1);
 		}
