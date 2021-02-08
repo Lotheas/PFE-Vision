@@ -38,6 +38,7 @@
 
 #include "staubli_manager.h"
 #include "im_traitement.h"
+#include "px2mm.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -125,7 +126,11 @@ private slots:
 
     void onGeneTrajClick();
 
-    void onOffsetChange(QVector3D offs);
+    void onOffsetChange(QVector3D offs, QVector3D currentStaubliPoint, QPoint dimIm);
+
+    void onPx2mmClick();
+
+    void onPush2Staubli();
 
 /****************************************
  *  Attributs privés
@@ -142,8 +147,11 @@ private:
     im_traitement im_trait;
 
     std::vector<std::vector<cv::Point>> trajectories;
+    std::vector<std::vector<QVector3D>> trajectoriesRobot;
 
     QVector3D offsets;
+    QVector3D centralPoint;
+    QPoint dimImage;
 
     calibration_window *w2;
 

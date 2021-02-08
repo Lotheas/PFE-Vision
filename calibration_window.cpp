@@ -407,7 +407,8 @@ void calibration_window::on_calibrate()
     offsets.setY(offsetY);
     offsets.setZ(offsetZ);
 
-    emit offsetsChanged(offsets);
+    QPoint dimIm((distH - focale) / focale * senDimX, (distH - focale) / focale * senDimY);
+    emit offsetsChanged(offsets, staubli->getCurrentPoint(), dimIm);
 }
 
 void calibration_window::on_editOffX()
@@ -422,7 +423,9 @@ void calibration_window::on_editOffX()
                ui->txt_offX);
 
     offsets.setX(offsetX);
-    emit offsetsChanged(offsets);
+
+    QPoint dimIm((distH - focale) / focale * senDimX, (distH - focale) / focale * senDimY);
+    emit offsetsChanged(offsets, staubli->getCurrentPoint(), dimIm);
 
 }
 
@@ -438,7 +441,9 @@ void calibration_window::on_editOffY()
                ui->txt_offY);
 
     offsets.setY(offsetY);
-    emit offsetsChanged(offsets);
+
+    QPoint dimIm((distH - focale) / focale * senDimX, (distH - focale) / focale * senDimY);
+    emit offsetsChanged(offsets, staubli->getCurrentPoint(), dimIm);
 
 }
 
@@ -454,7 +459,9 @@ void calibration_window::on_editOffZ()
                ui->txt_offZ);
 
     offsets.setZ(offsetZ);
-    emit offsetsChanged(offsets);
+
+    QPoint dimIm((distH - focale) / focale * senDimX, (distH - focale) / focale * senDimY);
+    emit offsetsChanged(offsets, staubli->getCurrentPoint(), dimIm);
 
 }
 /**********************************************************************************************

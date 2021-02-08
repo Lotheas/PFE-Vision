@@ -49,8 +49,22 @@ MainWindow::MainWindow(QWidget *parent)
 
     QObject::connect(ui->btn_traj, SIGNAL(clicked()), this, SLOT(onGeneTrajClick()));
 
+    QObject::connect(ui->btn_px2mm, SIGNAL(clicked()), this, SLOT(onPx2mmClick()));
+
     //Allocation dynamique de cvImage; devra être "delete"
     cvImage = new cv::Mat();
+
+    //MAJ de l'interface en fonction de l'état de la connexion avec le robot
+    if(staubli.online())
+    {
+        ui->lbl_staubli_txt->setText("Staubli online");
+        ui->lbl_staubli_color->setStyleSheet("background-color: rgb(0, 255, 0);");
+    }
+    else
+    {
+        ui->lbl_staubli_txt->setText("Staubli offline");
+        ui->lbl_staubli_color->setStyleSheet("background-color: rgb(255, 0, 0);");
+    }
 }
 
 MainWindow::~MainWindow()
@@ -252,6 +266,7 @@ void MainWindow::onGeneTrajClick()
 {
     if(!cvImagePre.empty())
     {
+        ui->btn_pushStaubli->setEnabled(true);
         trajectories = im_trait.trajectory_generation(cvImagePre);
 
         cvImageRes = cv::Mat(cvImagePre.size(), CV_8UC3, cv::Scalar(0));
@@ -259,6 +274,7 @@ void MainWindow::onGeneTrajClick()
         //initialisation pour l'utilisation de rand()
         srand(time(NULL));
 
+        //On créé l'image permettant de visualiser les points retenus pour la trajectoire
         for (uint i = 0; i < trajectories.size(); i++)
         {
             cv::Vec3b couleur(rand() % 155 + 100, rand() % 155 + 100, rand() % 155 + 100);
@@ -272,6 +288,7 @@ void MainWindow::onGeneTrajClick()
             }
         }
 
+        //On affiche l'image
         cv::cvtColor(cvImageRes, cvImageRes, cv::COLOR_BGR2RGB);
 
         qImageRes = QImage((unsigned char*)cvImageRes.data, cvImageRes.cols, cvImageRes.rows, QImage::Format_RGB888);
@@ -282,6 +299,33 @@ void MainWindow::onGeneTrajClick()
 
         qInfo() << "MAJ du label... ";
         ui->lbl_imgRes->setPixmap(pixmap);
+
+        //On affiche les points dans la table prévue à cet effet
+        //On clear les lignes du tableau
+        uint nbRows = ui->table_points->rowCount();
+
+        for(uint i = 0; i < nbRows; i++)
+        {
+            ui->table_points->removeRow(0);
+        }
+
+        //On le rempli avec les nouvelles données
+        for (uint i = 0; i < trajectories.size(); i++)
+        {
+
+            for (uint j = 0; j < trajectories[i].size(); j++)
+            {
+                ui->table_points->insertRow(ui->table_points->rowCount());
+
+                ui->table_points->setItem(  ui->table_points->rowCount()-1,
+                                            0,
+                                            new QTableWidgetItem(QString::number(i)));
+                ui->table_points->setItem(  ui->table_points->rowCount()-1,
+                                            1,
+                                            new QTableWidgetItem("(" + QString::number(trajectories[i][j].x) +
+                                                                 " ; " + QString::number(trajectories[i][j].y) + ")"));
+            }
+        }
     }
     else
     {
@@ -291,9 +335,84 @@ void MainWindow::onGeneTrajClick()
     }
 }
 
-void MainWindow::onOffsetChange(QVector3D offs)
+void MainWindow::onOffsetChange(QVector3D offs, QVector3D currentStaubliPoint, QPoint dimIm)
 {
     offsets = offs;
+    dimImage = dimIm;
+
+    //L'axe X du robot correspond à l'axe y de l'image et inversement (normalement dans le meme sens)
+    centralPoint.setX(currentStaubliPoint.x() - offs.y());
+
+    centralPoint.setY(currentStaubliPoint.y() - offs.x());
+
+    centralPoint.setZ(currentStaubliPoint.z() - offs.z());
+}
+
+void MainWindow::onPx2mmClick()
+{
+    QPoint reso(cvImage->cols, cvImage->rows);
+    trajectoriesRobot = px2mm::convertToMm(trajectories, centralPoint, reso, dimImage);
+
+    uint k = 0;
+
+    for (uint i = 0; i < trajectoriesRobot.size(); i++)
+    {
+
+        for (uint j = 0; j < trajectoriesRobot[i].size(); j++)
+        {
+            ui->table_points->setItem(  k,
+                                        2,
+                                        new QTableWidgetItem("(" + QString::number(trajectoriesRobot[i][j].x()) +
+                                                             " ; " + QString::number(trajectoriesRobot[i][j].y()) +
+                                                             " ; " + QString::number(trajectoriesRobot[i][j].z()) +
+                                                             ")"));
+            k++;
+        }
+    }
+
+}
+
+void MainWindow::onPush2Staubli()
+{
+    if(staubli.online())
+    {
+        ui->progressBar->setValue(0);
+
+        //Sending data
+        for (uint i = 0; i < trajectoriesRobot.size(); i++)
+        {
+
+            for (uint j = 0; j < trajectoriesRobot[i].size(); j++)
+            {
+                if(j == 0) //Premeire data on fait l'appro
+                {
+                    staubli.setTargetPoint( trajectoriesRobot[i][j].x(), trajectoriesRobot[i][j].y(), trajectoriesRobot[i][j].z() + 10);
+                    staubli.goToTarget();
+                    QThread::msleep(100);
+                }
+
+                staubli.setTargetPoint( trajectoriesRobot[i][j]);
+                staubli.goToTarget();
+                QThread::msleep(100);
+
+                if(j == trajectoriesRobot[i].size() - 1)//Derniere data on fait l'appro
+                {
+
+                    staubli.setTargetPoint( trajectoriesRobot[i][j].x(), trajectoriesRobot[i][j].y(), trajectoriesRobot[i][j].z() + 10);
+                    staubli.goToTarget();
+                    QThread::msleep(100);
+                }
+
+            }
+        }
+
+    }
+    else
+    {
+        QMessageBox msg;
+        msg.setText("Staubli offline, action impossible.");
+        msg.exec();
+    }
 }
 
 

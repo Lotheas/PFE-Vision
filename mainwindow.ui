@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1142</width>
-    <height>799</height>
+    <width>1127</width>
+    <height>821</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -21,10 +21,150 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="2" column="0">
-     <widget class="QPushButton" name="btn_calibrage">
+    <item row="4" column="1">
+     <widget class="QLabel" name="lbl_imgRes">
+      <property name="minimumSize">
+       <size>
+        <width>500</width>
+        <height>334</height>
+       </size>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
+      </property>
+      <property name="lineWidth">
+       <number>1</number>
+      </property>
       <property name="text">
-       <string>Calibrage</string>
+       <string>TextLabel</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="2">
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="2" column="1">
+       <widget class="QLabel" name="lbl_staubli_color">
+        <property name="maximumSize">
+         <size>
+          <width>20</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::Box</enum>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1" colspan="2">
+       <widget class="QPushButton" name="btn_pushStaubli">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>46</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Push to Staubli</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QLabel" name="lbl_staubli_txt">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>49</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>49</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string> Staubli </string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" colspan="2">
+       <spacer name="verticalSpacer">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="0" column="0" rowspan="4">
+       <widget class="QTableWidget" name="table_points">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>333</height>
+         </size>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="alternatingRowColors">
+         <bool>true</bool>
+        </property>
+        <column>
+         <property name="text">
+          <string>Traj no.</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Coord Image</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Coord Robot</string>
+         </property>
+        </column>
+       </widget>
+      </item>
+      <item row="1" column="1" colspan="2">
+       <widget class="QPushButton" name="btn_px2mm">
+        <property name="text">
+         <string>Staubli coord</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="3" column="2">
+     <widget class="QLabel" name="lbl_imgPre">
+      <property name="minimumSize">
+       <size>
+        <width>500</width>
+        <height>334</height>
+       </size>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
+      </property>
+      <property name="lineWidth">
+       <number>1</number>
+      </property>
+      <property name="text">
+       <string>TextLabel</string>
       </property>
      </widget>
     </item>
@@ -113,34 +253,25 @@
       </property>
      </widget>
     </item>
-    <item row="0" column="0">
-     <widget class="QPushButton" name="btn_init">
+    <item row="1" column="2">
+     <widget class="QPushButton" name="btn_traj">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="text">
-       <string>Initialisation</string>
+       <string>Génération des trajectoires</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="QPushButton" name="btn_calibrage">
+      <property name="text">
+       <string>Calibrage</string>
       </property>
      </widget>
     </item>
     <item row="3" column="1">
      <widget class="QLabel" name="lbl_imgInit">
-      <property name="minimumSize">
-       <size>
-        <width>500</width>
-        <height>334</height>
-       </size>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::Box</enum>
-      </property>
-      <property name="lineWidth">
-       <number>1</number>
-      </property>
-      <property name="text">
-       <string>TextLabel</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="2">
-     <widget class="QLabel" name="lbl_imgPre">
       <property name="minimumSize">
        <size>
         <width>500</width>
@@ -238,32 +369,17 @@
       </widget>
      </widget>
     </item>
-    <item row="4" column="1">
-     <widget class="QLabel" name="lbl_imgRes">
-      <property name="minimumSize">
-       <size>
-        <width>500</width>
-        <height>334</height>
-       </size>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::Box</enum>
-      </property>
-      <property name="lineWidth">
-       <number>1</number>
-      </property>
+    <item row="0" column="0">
+     <widget class="QPushButton" name="btn_init">
       <property name="text">
-       <string>TextLabel</string>
+       <string>Initialisation</string>
       </property>
      </widget>
     </item>
-    <item row="1" column="2">
-     <widget class="QPushButton" name="btn_traj">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
-      <property name="text">
-       <string>Génération des trajectoires</string>
+    <item row="5" column="1" colspan="2">
+     <widget class="QProgressBar" name="progressBar">
+      <property name="value">
+       <number>0</number>
       </property>
      </widget>
     </item>

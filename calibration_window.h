@@ -220,7 +220,7 @@ private slots :
     void on_editOffZ();
 
 signals:
-    void offsetsChanged(QVector3D);
+    void offsetsChanged(QVector3D, QVector3D, QPoint);
 };
 
 #endif // CALIBRATION_WINDOW_H
