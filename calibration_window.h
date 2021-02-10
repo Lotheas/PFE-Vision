@@ -45,7 +45,7 @@ private:
     ///
     /// \brief camera : permet d'aqerir des images avec l'API basler
     ///
-    camera_support camera;
+    camera_support *camera;
 
     ///
     /// \brief staubli : permet de gérer les mouvements du staubli
@@ -218,6 +218,11 @@ private slots :
     /// \brief on_editOffZ : permet de modifier les paramètre calculés
     ///
     void on_editOffZ();
+
+    ///
+    /// \brief onDestruction : appelé quand la fen^tre se ferme
+    ///
+    void onDestruction();
 
 signals:
     void offsetsChanged(QVector3D, QVector3D, QPoint);

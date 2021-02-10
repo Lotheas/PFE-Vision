@@ -67,7 +67,7 @@ void comm::Connection(QString serveurIP,qint16 serveurPort)
     socket = new QTcpSocket();
     socket->connectToHost(serveurIP, serveurPort);
 
-    if(socket->waitForConnected(2000))
+    if(socket->waitForConnected(20000))
         qInfo() << "Connected!";
     else
         qInfo().noquote() << "Connexion failed : " << socket->errorString();

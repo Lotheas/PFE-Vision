@@ -63,7 +63,8 @@ void camera_support::initilialize()
 bool camera_support::take_picture(cv::Mat *result)
 {
     //Arrête ce que faisait possiblemnt la camréa
-    camera->Close();
+    if(camera->IsOpen())
+        camera->Close();
 
     //Ouvre une nouvelle connection
     camera->Open();

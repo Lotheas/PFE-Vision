@@ -16,6 +16,9 @@ public:
     void setRelativeTarget(QVector3D dPt);
     void setRelativeTarget(qfloat16 dx, qfloat16 dy, qfloat16 dz);
 
+    void goHome();
+
+
     void goToTarget();
 
     bool online();
@@ -23,6 +26,8 @@ public:
 
 private:
     comm communication;
+
+    QVector3D initCoord;
 
     QVector3D currentCoord;
 

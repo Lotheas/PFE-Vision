@@ -36,7 +36,7 @@
        <number>1</number>
       </property>
       <property name="text">
-       <string>TextLabel</string>
+       <string/>
       </property>
      </widget>
     </item>
@@ -164,12 +164,15 @@
        <number>1</number>
       </property>
       <property name="text">
-       <string>TextLabel</string>
+       <string/>
       </property>
      </widget>
     </item>
     <item row="3" column="0">
      <widget class="QGroupBox" name="groupBox_resolution">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="minimumSize">
        <size>
         <width>100</width>
@@ -190,6 +193,9 @@
        </property>
        <property name="text">
         <string>3088 x 2064</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
        </property>
       </widget>
       <widget class="QRadioButton" name="radioBtn_2316x1548">
@@ -265,6 +271,9 @@
     </item>
     <item row="2" column="0">
      <widget class="QPushButton" name="btn_calibrage">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="text">
        <string>Calibrage</string>
       </property>
@@ -285,7 +294,7 @@
        <number>1</number>
       </property>
       <property name="text">
-       <string>TextLabel</string>
+       <string/>
       </property>
      </widget>
     </item>
@@ -316,13 +325,16 @@
            <number>1</number>
           </property>
           <property name="maximum">
-           <number>100</number>
+           <number>250</number>
           </property>
           <property name="pageStep">
            <number>5</number>
           </property>
+          <property name="value">
+           <number>105</number>
+          </property>
           <property name="sliderPosition">
-           <number>80</number>
+           <number>105</number>
           </property>
           <property name="orientation">
            <enum>Qt::Horizontal</enum>

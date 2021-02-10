@@ -793,7 +793,7 @@
       <string>5</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_robotXDown">
+    <widget class="QPushButton" name="btn_robotYDown">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -838,7 +838,7 @@
       <string>+</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_robotXUp">
+    <widget class="QPushButton" name="btn_robotYUp">
      <property name="geometry">
       <rect>
        <x>80</x>
@@ -870,7 +870,7 @@
       <number>1</number>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_robotYUp">
+    <widget class="QPushButton" name="btn_robotXDown">
      <property name="geometry">
       <rect>
        <x>50</x>
@@ -902,7 +902,7 @@
       <number>1</number>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_robotYDown">
+    <widget class="QPushButton" name="btn_robotXUp">
      <property name="geometry">
       <rect>
        <x>50</x>
@@ -991,7 +991,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>Y++</string>
+      <string>X--</string>
      </property>
      <property name="shortcut">
       <string>U</string>
@@ -1016,7 +1016,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>X++</string>
+      <string>Y++</string>
      </property>
      <property name="shortcut">
       <string>U</string>

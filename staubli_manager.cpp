@@ -2,9 +2,11 @@
 
 staubli_manager::staubli_manager()
 {
-    currentCoord.setX(400);
-    currentCoord.setY(-100);
-    currentCoord.setZ(157);
+    initCoord.setX(390);
+    initCoord.setY(60);
+    initCoord.setZ(-270);
+
+    currentCoord = initCoord;
 
     targetCoord = currentCoord;
 }
@@ -58,4 +60,9 @@ bool staubli_manager::online()
     else
         return false;
 
+}
+
+void staubli_manager::goHome()
+{
+    targetCoord = initCoord;
 }

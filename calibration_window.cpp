@@ -19,7 +19,7 @@ calibration_window::calibration_window(QWidget *parent, camera_support *cam, sta
 {
     ui->setupUi(this);
 
-    camera = *cam;
+    camera = cam;
     staubli = stbl;
 
     if(staubli->online())
@@ -34,13 +34,13 @@ calibration_window::calibration_window(QWidget *parent, camera_support *cam, sta
     }
 
     //Valeurs par défaut
-    focale = 12.0;
-    dimX = camera.getResolution()[0];
-    dimY = camera.getResolution()[1];
+    focale = 13.0;
+    dimX = camera->getResolution()[0];
+    dimY = camera->getResolution()[1];
     senDimX = 7.41597183;
     senDimY = 4.95678946;
-    diamCercle = 120;
-    distH = 600;
+    diamCercle = 26;
+    distH = 830;
 
     offsetX = 0;
     offsetY = 0;
@@ -98,6 +98,10 @@ calibration_window::calibration_window(QWidget *parent, camera_support *cam, sta
 
 
     QObject::connect(ui->btn_offX, SIGNAL(clicked()), this, SLOT(on_editOffX()));
+    QObject::connect(ui->btn_offY, SIGNAL(clicked()), this, SLOT(on_editOffY()));
+    QObject::connect(ui->btn_offZ, SIGNAL(clicked()), this, SLOT(on_editOffZ()));
+
+    QObject::connect(this, SIGNAL(destroyed()), this, SLOT(onDestruction()));
 
 
 }
@@ -140,8 +144,8 @@ void calibration_window::on_draw()
                      gray.rows/16,
                      100,
                      25,
-                     20,
-                     200);
+                     80,
+                     180);
 
         ui->lbl_nbCircle->setText(QString::number(circles.size()) + " cercle trouvé.");
 
@@ -357,12 +361,19 @@ void calibration_window::on_robotCoordChange()
     ui->txtBox_robotY->setText(QString::number(pt.y()));
     ui->txtBox_robotZ->setText(QString::number(pt.z()));
 
+    //Delay de 500 ms
+    QTime dieTime= QTime::currentTime().addMSecs(650);
+    while (QTime::currentTime() < dieTime)
+        QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
+
     on_takePicture();
+
+
 }
 
 void calibration_window::on_takePicture()
 {
-    if(camera.take_picture(&image))
+    if(camera->take_picture(&image))
     {
         printImage(image);
     }
@@ -418,8 +429,8 @@ void calibration_window::on_editOffX()
                &offsetX,
                "Offset X",
                "mm",
-               -300,
-               300,
+               -1000,
+               1000,
                ui->txt_offX);
 
     offsets.setX(offsetX);
@@ -436,8 +447,8 @@ void calibration_window::on_editOffY()
                &offsetY,
                "Offset Y",
                "mm",
-               -300,
-               300,
+               -1000,
+               1000,
                ui->txt_offY);
 
     offsets.setY(offsetY);
@@ -454,8 +465,8 @@ void calibration_window::on_editOffZ()
                &offsetZ,
                "Offset Z",
                "mm",
-               -300,
-               300,
+               -1000,
+               1000,
                ui->txt_offZ);
 
     offsets.setZ(offsetZ);
@@ -463,6 +474,11 @@ void calibration_window::on_editOffZ()
     QPoint dimIm((distH - focale) / focale * senDimX, (distH - focale) / focale * senDimY);
     emit offsetsChanged(offsets, staubli->getCurrentPoint(), dimIm);
 
+}
+
+void calibration_window::onDestruction()
+{
+    staubli->goHome();
 }
 /**********************************************************************************************
                                           _ _

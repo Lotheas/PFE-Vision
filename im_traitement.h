@@ -15,7 +15,7 @@
 #include "Im_traitement\skeleton.h"
 #include "Im_traitement\utilitaire.h"
 
-#define SCALE 3
+#define SCALE 2
 #define DOWNSCALE true
 
 class im_traitement //: public QObject

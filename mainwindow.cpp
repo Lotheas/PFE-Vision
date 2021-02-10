@@ -51,6 +51,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     QObject::connect(ui->btn_px2mm, SIGNAL(clicked()), this, SLOT(onPx2mmClick()));
 
+    QObject::connect(ui->btn_pushStaubli, SIGNAL(clicked()), this, SLOT(onPush2Staubli()));
+
     //Allocation dynamique de cvImage; devra être "delete"
     cvImage = new cv::Mat();
 
@@ -82,6 +84,7 @@ void MainWindow::onInitClick()
 
     if(oneRadioChecked)
     {
+        ui->btn_calibrage->setEnabled(true);
         camera.initilialize();
 
         //MAJ des bouttons
@@ -117,6 +120,9 @@ void MainWindow::onCalibrateClick()
     connect(w2, SIGNAL(destroyed()), & loop, SLOT(quit()));
     loop.exec();
 
+    staubli.goHome();
+    staubli.goToTarget();
+
     qInfo() << "Offsets from main : " << offsets.x() << " : " << offsets.y() << " : " << offsets.z();
 }
 
@@ -131,7 +137,7 @@ void MainWindow::onSingleClick()
         qInfo() << "\tDimensions de l'image source : " << cvImage->rows << " x " << cvImage->cols;
         qInfo() << "\tChannels l'image source : " << cvImage->channels();
 
-        cv::cvtColor( *cvImage, cvImageToPrint, cv::COLOR_BGR2RGB);
+        cv::cvtColor(*cvImage, cvImageToPrint, cv::COLOR_BGR2RGB);
 
         qInfo() << "\tConversion de l'image en QImage..." ;
         qImage = QImage((unsigned char*)cvImageToPrint.data, cvImageToPrint.cols, cvImageToPrint.rows, QImage::Format_RGB888);
@@ -168,10 +174,34 @@ void MainWindow::onImgPreClick()
     qInfo() << "\tSeuillage de l'image...";
 
     cv::cvtColor( *cvImage, cvImagePre, cv::COLOR_BGR2GRAY);
-    cv::blur( cvImagePre, cvImagePre, cv::Size(3,3));
+
+    //cv::equalizeHist(cvImagePre, cvImagePre);
+
+    cv::Mat mask = cv::Mat::zeros(cvImagePre.rows,cvImagePre.cols,CV_8U);
+
+    float maxdist = std::sqrt(cvImagePre.rows*cvImagePre.rows+cvImagePre.cols*cvImagePre.cols)/2;
+
+    cv::Point2f center(cvImagePre.cols*0.5,cvImagePre.rows*0.5);
+
+    for (int j=0;j<cvImagePre.rows;++j)
+    {
+        for (int i=0;i<cvImagePre.cols;++i)
+        {
+             cv::Point2f p(i,j);
+             cv::Point2f diff(p-center);
+             float dist(std::sqrt(diff.dot(diff)));
+             float factor(255*(0.8+0.4*dist/maxdist));
+             mask.at<uchar>(j,i) = factor;
+        }
+    }
+
+    //cv::imshow("hey", cvImagePre);
+
+    //cv::imshow("coucou", cvImagePre);
+    //cv::blur( cvImagePre, cvImagePre, cv::Size(5,5));
     cv::threshold(cvImagePre, cvImagePre, ui->slider_ts->value(), 255,
-                  ui->checkBox_inversion->isChecked() ? cv::THRESH_BINARY_INV : cv::THRESH_BINARY);
-    //cv::adaptiveThreshold(cvImageBlur, cvImageToPrint, 255, cv::ADAPTIVE_THRESH_GAUSSIAN_C, cv::THRESH_BINARY_INV, 11, 2);
+                  ui->checkBox_inversion->isChecked() ? cv::THRESH_BINARY_INV : cv::THRESH_BINARY );
+    //cv::adaptiveThreshold(cvImagePre, cvImagePre, 255, cv::ADAPTIVE_THRESH_GAUSSIAN_C, cv::THRESH_BINARY_INV, 11, 2); //ui->slider_ts->value(), ui->slider_ratio->value());
 
     qInfo() << "\tConversion de l'image en QImage..." ;
     qImagePre = QImage((unsigned char*)cvImagePre.data, cvImagePre.cols, cvImagePre.rows, QImage::Format_Grayscale8);
@@ -341,11 +371,11 @@ void MainWindow::onOffsetChange(QVector3D offs, QVector3D currentStaubliPoint, Q
     dimImage = dimIm;
 
     //L'axe X du robot correspond à l'axe y de l'image et inversement (normalement dans le meme sens)
-    centralPoint.setX(currentStaubliPoint.x() - offs.y());
+    centralPoint.setX(currentStaubliPoint.x() - offs.y() - 4);
 
-    centralPoint.setY(currentStaubliPoint.y() - offs.x());
+    centralPoint.setY(currentStaubliPoint.y() - offs.x() + 2);
 
-    centralPoint.setZ(currentStaubliPoint.z() - offs.z());
+    centralPoint.setZ(currentStaubliPoint.z() - offs.z() + 203);
 }
 
 void MainWindow::onPx2mmClick()
@@ -377,7 +407,7 @@ void MainWindow::onPush2Staubli()
     if(staubli.online())
     {
         ui->progressBar->setValue(0);
-
+        ui->progressBar->setMaximum(ui->table_points->rowCount());
         //Sending data
         for (uint i = 0; i < trajectoriesRobot.size(); i++)
         {
@@ -394,6 +424,7 @@ void MainWindow::onPush2Staubli()
                 staubli.setTargetPoint( trajectoriesRobot[i][j]);
                 staubli.goToTarget();
                 QThread::msleep(100);
+                ui->progressBar->setValue(ui->progressBar->value() + 1);
 
                 if(j == trajectoriesRobot[i].size() - 1)//Derniere data on fait l'appro
                 {
@@ -405,6 +436,8 @@ void MainWindow::onPush2Staubli()
 
             }
         }
+        staubli.goHome();
+        staubli.goToTarget();
 
     }
     else
