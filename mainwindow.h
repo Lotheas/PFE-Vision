@@ -27,12 +27,18 @@
 #include <QDebug>
 #include "camera_support.h"
 
+#include "calibration_window.h"
+
 /****************************************
  *  OpenCV includes
  * *************************************/
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc.hpp>
+
+#include "staubli_manager.h"
+#include "im_traitement.h"
+#include "px2mm.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -66,17 +72,17 @@ private slots:
          */
     void onInitClick();
         /**
+         * @brief onCalibrateClick : lance la fenetre de calibrage
+         */
+    void onCalibrateClick();
+        /**
          * @brief onSingleClick : Met à jour l'interface et effectue une capture avec la caméra
          */
     void onSingleClick();
         /**
-         * @brief onVideoClick : Met à jour l'interface
+         * @brief onImgPreClick : permet de réaliser le traitement préliminaire de l'image et de l'afficher
          */
-    void onVideoClick();
-        /**
-         * @brief onStopClick : Met à jour l'interface
-         */
-    void onStopClick();
+    void onImgPreClick();
         /**
          * @brief onDiscoClick : Met à jour l'interface et déconnecte la caméra
          */
@@ -118,6 +124,14 @@ private slots:
      */
     void onCkBxSeuillageChange(int state);
 
+    void onGeneTrajClick();
+
+    void onOffsetChange(QVector3D offs, QVector3D currentStaubliPoint, QPoint dimIm);
+
+    void onPx2mmClick();
+
+    void onPush2Staubli();
+
 /****************************************
  *  Attributs privés
  * *************************************/
@@ -130,7 +144,23 @@ private:
     Ui::MainWindow *ui;
     QRadioButton *radioRes[4];
 
+    im_traitement im_trait;
+
+    std::vector<std::vector<cv::Point>> trajectories;
+    std::vector<std::vector<QVector3D>> trajectoriesRobot;
+
+    QVector3D offsets;
+    QVector3D centralPoint;
+    QPoint dimImage;
+
+    calibration_window *w2;
+
+    staubli_manager staubli;
+
     QImage qImage;
+    QImage qImagePre;
+    QImage qImageSkel;
+    QImage qImageRes;
 
     camera_support camera;
 
@@ -138,18 +168,16 @@ private:
     int cvRatio;
 
     cv::Mat *cvImage;
+    cv::Mat cvImagePre;
+    cv::Mat cvImageSkel;
+    cv::Mat cvImageRes;
     cv::Mat cvImageToPrint;
     /**
      * @brief The typeDeTraitement enum : désigne un type de traitement d'image
      */
     enum enumTypeDeTraitement{aucun = 0, segmentation = 1, contours = 2, seuillage = 4};
     enumTypeDeTraitement typeDeTraitement = aucun;
-    /**
-     * @brief imageTraitement : traite l'image passée en paramètre
-     * @param image
-     * @param type
-     */
-    void imageTraitement();
+
     /**
      * @brief findCenter : trouve le point tq 95% des points blancs sont dedans avec un rayon minimum
      * @return les coordonnées trouvées

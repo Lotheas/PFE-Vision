@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1169</width>
-    <height>714</height>
+    <width>1127</width>
+    <height>821</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>700</width>
-    <height>700</height>
+    <height>200</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -21,135 +21,158 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="1" column="7">
-     <widget class="QSlider" name="slider_ts">
-      <property name="minimum">
-       <number>1</number>
-      </property>
-      <property name="maximum">
-       <number>100</number>
-      </property>
-      <property name="pageStep">
-       <number>5</number>
-      </property>
-      <property name="sliderPosition">
-       <number>80</number>
-      </property>
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="10">
-     <widget class="QLCDNumber" name="lcd_fps"/>
-    </item>
-    <item row="1" column="6">
-     <widget class="QCheckBox" name="checkBox_coord">
-      <property name="text">
-       <string>Coordonnées</string>
-      </property>
-      <property name="tristate">
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="4">
-     <widget class="QCheckBox" name="checkBox_inversion">
-      <property name="text">
-       <string>Inversion</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="9">
-     <widget class="QLabel" name="lbl_fps">
-      <property name="layoutDirection">
-       <enum>Qt::LeftToRight</enum>
-      </property>
-      <property name="text">
-       <string>FPS : </string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="2" colspan="9">
-     <widget class="QLabel" name="lbl_img">
+    <item row="4" column="1">
+     <widget class="QLabel" name="lbl_imgRes">
       <property name="minimumSize">
        <size>
-        <width>700</width>
-        <height>700</height>
+        <width>500</width>
+        <height>334</height>
        </size>
       </property>
       <property name="frameShape">
-       <enum>QFrame::NoFrame</enum>
+       <enum>QFrame::Box</enum>
       </property>
       <property name="lineWidth">
-       <number>3</number>
-      </property>
-      <property name="text">
-       <string>TextLabel</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="0">
-     <widget class="QPushButton" name="btn_init">
-      <property name="text">
-       <string>Initialisation</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="2">
-     <widget class="QPushButton" name="btn_single">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
-      <property name="text">
-       <string>Single</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QPushButton" name="btn_disconnect">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
-      <property name="text">
-       <string>Disconnect</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="8">
-     <widget class="QPushButton" name="btn_stop">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
-      <property name="text">
-       <string>Stop</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="8">
-     <widget class="QSlider" name="slider_ratio">
-      <property name="minimum">
-       <number>0</number>
-      </property>
-      <property name="maximum">
-       <number>10</number>
-      </property>
-      <property name="pageStep">
        <number>1</number>
       </property>
-      <property name="value">
-       <number>3</number>
-      </property>
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
+      <property name="text">
+       <string/>
       </property>
      </widget>
     </item>
-    <item row="2" column="0">
+    <item row="4" column="2">
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="2" column="1">
+       <widget class="QLabel" name="lbl_staubli_color">
+        <property name="maximumSize">
+         <size>
+          <width>20</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::Box</enum>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1" colspan="2">
+       <widget class="QPushButton" name="btn_pushStaubli">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>46</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Push to Staubli</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QLabel" name="lbl_staubli_txt">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>49</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>49</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string> Staubli </string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" colspan="2">
+       <spacer name="verticalSpacer">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="0" column="0" rowspan="4">
+       <widget class="QTableWidget" name="table_points">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>333</height>
+         </size>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="alternatingRowColors">
+         <bool>true</bool>
+        </property>
+        <column>
+         <property name="text">
+          <string>Traj no.</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Coord Image</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Coord Robot</string>
+         </property>
+        </column>
+       </widget>
+      </item>
+      <item row="1" column="1" colspan="2">
+       <widget class="QPushButton" name="btn_px2mm">
+        <property name="text">
+         <string>Staubli coord</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="3" column="2">
+     <widget class="QLabel" name="lbl_imgPre">
+      <property name="minimumSize">
+       <size>
+        <width>500</width>
+        <height>334</height>
+       </size>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
+      </property>
+      <property name="lineWidth">
+       <number>1</number>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0">
      <widget class="QGroupBox" name="groupBox_resolution">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="minimumSize">
        <size>
         <width>100</width>
@@ -170,6 +193,9 @@
        </property>
        <property name="text">
         <string>3088 x 2064</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
        </property>
       </widget>
       <widget class="QRadioButton" name="radioBtn_2316x1548">
@@ -213,34 +239,162 @@
       </widget>
      </widget>
     </item>
-    <item row="1" column="2">
-     <widget class="QCheckBox" name="checkBox_contours">
-      <property name="text">
-       <string>Contours</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="3">
-     <widget class="QCheckBox" name="checkBox_seuillage">
-      <property name="text">
-       <string>Seuillage</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="3">
-     <widget class="QPushButton" name="btn_video">
+    <item row="4" column="0">
+     <widget class="QPushButton" name="btn_single">
       <property name="enabled">
        <bool>false</bool>
       </property>
       <property name="text">
-       <string>Video</string>
+       <string>Take first picture</string>
       </property>
      </widget>
     </item>
-    <item row="0" column="6">
-     <widget class="QCheckBox" name="checkBox_onRealImage">
+    <item row="1" column="0">
+     <widget class="QPushButton" name="btn_disconnect">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="text">
-       <string>Sur l'image de base</string>
+       <string>Disconnect</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="2">
+     <widget class="QPushButton" name="btn_traj">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="text">
+       <string>Génération des trajectoires</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="QPushButton" name="btn_calibrage">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="text">
+       <string>Calibrage</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="1">
+     <widget class="QLabel" name="lbl_imgInit">
+      <property name="minimumSize">
+       <size>
+        <width>500</width>
+        <height>334</height>
+       </size>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
+      </property>
+      <property name="lineWidth">
+       <number>1</number>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1" rowspan="3">
+     <widget class="QGroupBox" name="groupBox">
+      <property name="minimumSize">
+       <size>
+        <width>379</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="title">
+       <string>Traitement réliminaire</string>
+      </property>
+      <widget class="QWidget" name="gridLayoutWidget">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>20</y>
+         <width>481</width>
+         <height>53</height>
+        </rect>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="2" column="0">
+         <widget class="QSlider" name="slider_ts">
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="maximum">
+           <number>250</number>
+          </property>
+          <property name="pageStep">
+           <number>5</number>
+          </property>
+          <property name="value">
+           <number>105</number>
+          </property>
+          <property name="sliderPosition">
+           <number>105</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QSlider" name="slider_ratio">
+          <property name="minimum">
+           <number>0</number>
+          </property>
+          <property name="maximum">
+           <number>10</number>
+          </property>
+          <property name="pageStep">
+           <number>1</number>
+          </property>
+          <property name="value">
+           <number>3</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2" rowspan="3">
+         <widget class="QPushButton" name="btn_imgPre">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>Pretraitement</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0" rowspan="2" colspan="2">
+         <widget class="QCheckBox" name="checkBox_inversion">
+          <property name="text">
+           <string>Inversion</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QPushButton" name="btn_init">
+      <property name="text">
+       <string>Initialisation</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="1" colspan="2">
+     <widget class="QProgressBar" name="progressBar">
+      <property name="value">
+       <number>0</number>
       </property>
      </widget>
     </item>

@@ -80,6 +80,13 @@ public:
          */
     void unInitialize();
 
+    /**
+     * @brief getResolution : récupère la résolution de l'image au format Vec2i
+     * @return
+     */
+    cv::Vec2i getResolution();
+
+
 
 /****************************************
  *  Attributs privés

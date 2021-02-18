@@ -10,12 +10,13 @@ camera_support::camera_support()
     //Set default value
     im_width = 3088;
     im_height = 2064;
+
 }
 
 camera_support::~camera_support()
 {
-    if(camera != NULL)
-        delete camera;
+    //if(camera != NULL)
+        //delete camera;
 
     PylonTerminate();
 }
@@ -62,12 +63,13 @@ void camera_support::initilialize()
 bool camera_support::take_picture(cv::Mat *result)
 {
     //Arrête ce que faisait possiblemnt la camréa
-    camera->Close();
+    if(camera->IsOpen())
+        camera->Close();
 
     //Ouvre une nouvelle connection
     camera->Open();
     camera->StartGrabbing(); //Constructor with default parameters
-    qInfo() << "\tgrab started.";
+    //qInfo() << "\tgrab started.";
     CGrabResultPtr ptrGrabResult;
 
     camera->RetrieveResult( 5000, ptrGrabResult, TimeoutHandling_ThrowException);
@@ -93,9 +95,9 @@ bool camera_support::take_picture(cv::Mat *result)
         //        //Save OpenCV image.
         //        imwrite(imageName, cvImage);
 
-        qInfo() << "\tcvImage dimensions : " << cvImage.rows << " x " << cvImage.cols;
+        //qInfo() << "\tcvImage dimensions : " << cvImage.rows << " x " << cvImage.cols;
         *result = cvImage.clone();
-        qInfo() << "\tResult dimensions : " << result->rows << " x " << result->cols;
+        //qInfo() << "\tResult dimensions : " << result->rows << " x " << result->cols;
 
         //        qInfo() << "\tResult saving...";
         //        std::ostringstream s2;
@@ -129,5 +131,12 @@ void camera_support::unInitialize()
         camera->StopGrabbing();
     if(camera->IsOpen())
         camera->Close();
+}
+
+cv::Vec2i camera_support::getResolution()
+{
+    cv::Vec2i res(im_width, im_height);
+
+    return res;
 }
 
