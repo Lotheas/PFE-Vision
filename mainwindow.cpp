@@ -371,9 +371,9 @@ void MainWindow::onOffsetChange(QVector3D offs, QVector3D currentStaubliPoint, Q
     dimImage = dimIm;
 
     //L'axe X du robot correspond à l'axe y de l'image et inversement (normalement dans le meme sens)
-    centralPoint.setX(currentStaubliPoint.x() - offs.y() - 4);
+    centralPoint.setX(currentStaubliPoint.x() - offs.y() - 44.5);
 
-    centralPoint.setY(currentStaubliPoint.y() - offs.x() + 2);
+    centralPoint.setY(currentStaubliPoint.y() - offs.x() + 2.5);
 
     centralPoint.setZ(currentStaubliPoint.z() - offs.z() + 203);
 }
@@ -416,7 +416,7 @@ void MainWindow::onPush2Staubli()
             {
                 if(j == 0) //Premeire data on fait l'appro
                 {
-                    staubli.setTargetPoint( trajectoriesRobot[i][j].x(), trajectoriesRobot[i][j].y(), trajectoriesRobot[i][j].z() + 10);
+                    staubli.setTargetPoint( trajectoriesRobot[i][j].x(), trajectoriesRobot[i][j].y(), trajectoriesRobot[i][j].z() + 20);
                     staubli.goToTarget();
                     QThread::msleep(100);
                 }
@@ -429,9 +429,9 @@ void MainWindow::onPush2Staubli()
                 if(j == trajectoriesRobot[i].size() - 1)//Derniere data on fait l'appro
                 {
 
-                    staubli.setTargetPoint( trajectoriesRobot[i][j].x(), trajectoriesRobot[i][j].y(), trajectoriesRobot[i][j].z() + 10);
+                    staubli.setTargetPoint( trajectoriesRobot[i][j].x(), trajectoriesRobot[i][j].y(), trajectoriesRobot[i][j].z() + 20);
                     staubli.goToTarget();
-                    QThread::msleep(100);
+                    QThread::msleep(50);
                 }
 
             }

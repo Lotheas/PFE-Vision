@@ -9,7 +9,7 @@
 
 #include "utilitaire.h"
 
-#define POINT_SPACING 5
+#define POINT_SPACING 3
 
 void morphological_skeleton(cv::Mat* image); 
 cv::Mat amincissement(cv::Mat image, cv::Mat element);

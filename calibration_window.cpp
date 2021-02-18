@@ -40,7 +40,7 @@ calibration_window::calibration_window(QWidget *parent, camera_support *cam, sta
     senDimX = 7.41597183;
     senDimY = 4.95678946;
     diamCercle = 26;
-    distH = 830;
+    distH = 834;
 
     offsetX = 0;
     offsetY = 0;
